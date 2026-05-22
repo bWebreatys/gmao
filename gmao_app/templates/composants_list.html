@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Composants{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🔩 Composants <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('composants_new') }}" class="btn btn-success">➕ Nouveau composant</a>
+</div>
+<form method="get">
+  <div class="filter-bar">
+    <div class="filter-group"><label>🔍 Recherche</label>
+      <input type="text" name="q" value="{{ search }}" placeholder="Code, nom, équipement…" autocomplete="off"></div>
+    <div class="filter-group"><label>Statut</label>
+      <select name="statut"><option value="">— Tous —</option>
+        {% for v in statuts %}<option value="{{ v }}" {% if v==f_stat %}selected{% endif %}>{{ v }}</option>{% endfor %}
+      </select></div>
+    <div class="filter-group"><label>Équipement</label>
+      <select name="eq"><option value="">— Tous —</option>
+        {% for v in equipements %}<option value="{{ v }}" {% if v==f_eq %}selected{% endif %}>{{ v }}</option>{% endfor %}
+      </select></div>
+    <div style="display:flex;gap:6px;align-items:flex-end">
+      <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+      <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+  </div>
+</form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code</th><th>Équipement</th><th>Désignation EQ</th><th>Nom composant</th>
+    <th>Type</th><th>Statut</th><th>Détection défaut</th><th>Action requise</th>
+    <th>Package</th><th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  {% set sc = {'Fonctionnel':'statut-realisee','Défectueux':'statut-ouverte','Remplacé':'statut-cloturee','Commandé':'statut-en-cours','En attente':'statut-planifiee'}.get(r.Statut_Composant,'') %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_Composant }}</strong></td>
+    <td>{{ r.Code_Equipement }}</td>
+    <td class="text-muted">{{ r.Designation_Equip }}</td>
+    <td>{{ r.Nom_Composant }}</td>
+    <td class="text-muted">{{ r.Type_Composant }}</td>
+    <td>{% if r.Statut_Composant %}<span class="badge-statut {{ sc }}">{{ r.Statut_Composant }}</span>{% endif %}</td>
+    <td class="text-muted">{{ r.Date_Detection_Defaut }}</td>
+    <td class="text-muted">{{ r.Action_Requise }}</td>
+    <td class="text-muted" style="font-size:.78rem">{{ r.Code_Package }}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('composants_edit', code=r.Code_Composant) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_Composant }}','{{ r.Nom_Composant|replace("'","\\'")|replace('"',"&quot;") }}','/composants/supprimer/{{ r.Code_Composant }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">🔩</div><p>Aucun composant.</p></div>{% endif %}
+</div></div>
+{% endblock %}

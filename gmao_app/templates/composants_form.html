@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">{% if is_new %}➕{% else %}✏️{% endif %} {{ title }}</div>
+  <a href="{{ url_for('composants_list') }}" class="btn btn-secondary">← Retour</a>
+</div>
+<div class="legend-init">⚠ Cet onglet est entièrement une <strong>initiative</strong> – tous les champs sont en rouge.</div>
+<div class="card"><div class="card-header">🔩 Fiche composant</div><div class="card-body">
+<form method="post" action="{{ action }}" novalidate>
+<div class="form-grid">
+
+  <div class="form-section init"><span class="form-section-title">★ Identification</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Code_Composant <span class="req">*</span> <span class="init">★ init</span></label>
+    <div class="code-wrap">
+      <input type="text" name="Code_Composant" class="form-control {% if errors.Code_Composant %}is-invalid{% endif %}"
+             value="{{ fd.get('Code_Composant','') }}" {% if not is_new %}readonly{% endif %} maxlength="15">
+      {% if is_new %}<button type="button" class="btn-regen" onclick="regenCode('Code_Composant','COMP','COMPOSANTS',3)">🔄</button>{% endif %}
+    </div>
+    {% if errors.Code_Composant %}<div class="form-error">{{ errors.Code_Composant }}</div>{% endif %}
+    <div class="form-hint">Format : COMP001</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Équipement parent <span class="req">*</span> <span class="init">★ init</span></label>
+    <select name="Code_Equipement" class="form-control {% if errors.Code_Equipement %}is-invalid{% endif %}">
+      <option value="">— Choisir —</option>
+      {% for v in equipements %}<option value="{{ v }}" {% if fd.get('Code_Equipement')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+    {% if errors.Code_Equipement %}<div class="form-error">{{ errors.Code_Equipement }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Désignation équipement <span class="init">★ init</span></label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Designation_Equip','—') or '—' }}</div>
+    <div class="form-hint">Calculé automatiquement (VLOOKUP)</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Nom du composant <span class="req">*</span> <span class="init">★ init</span></label>
+    <input type="text" name="Nom_Composant" class="form-control {% if errors.Nom_Composant %}is-invalid{% endif %}"
+           value="{{ fd.get('Nom_Composant','') }}" placeholder="Ex: Dalle écran, Batterie…">
+    {% if errors.Nom_Composant %}<div class="form-error">{{ errors.Nom_Composant }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Type composant <span class="init">★ init</span></label>
+    <select name="Type_Composant" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Type_Composant %}<option value="{{ v }}" {% if fd.get('Type_Composant')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Marque <span class="init">★ init</span></label>
+    <input type="text" name="Marque_Composant" class="form-control" value="{{ fd.get('Marque_Composant','') }}">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Statut <span class="req">*</span> <span class="init">★ init</span></label>
+    <select name="Statut_Composant" class="form-control {% if errors.Statut_Composant %}is-invalid{% endif %}">
+      <option value="">— Choisir —</option>
+      {% for v in L.Statut_Composant %}<option value="{{ v }}" {% if fd.get('Statut_Composant')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+    {% if errors.Statut_Composant %}<div class="form-error">{{ errors.Statut_Composant }}</div>{% endif %}
+  </div>
+
+  <div class="form-section init"><span class="form-section-title">★ Défaut & action</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Date détection défaut <span class="init">★ init</span></label>
+    <div class="date-wrap"><input type="text" name="Date_Detection_Defaut" class="form-control date-input {% if errors.Date_Detection_Defaut %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Detection_Defaut','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Detection_Defaut %}<div class="form-error">{{ errors.Date_Detection_Defaut }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Action requise <span class="init">★ init</span></label>
+    <select name="Action_Requise" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in action_list %}<option value="{{ v }}" {% if fd.get('Action_Requise')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Date commande <span class="init">★ init</span></label>
+    <div class="date-wrap"><input type="text" name="Date_Commande" class="form-control date-input {% if errors.Date_Commande %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Commande','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Commande %}<div class="form-error">{{ errors.Date_Commande }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Fournisseur pièce <span class="init">★ init</span></label>
+    <select name="Fournisseur_Piece" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in fournisseurs %}<option value="{{ v }}" {% if fd.get('Fournisseur_Piece')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Réf. pièce commandée <span class="init">★ init</span></label>
+    <input type="text" name="Ref_Piece_Commandee" class="form-control" value="{{ fd.get('Ref_Piece_Commandee','') }}">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Date remplacement <span class="init">★ init</span></label>
+    <div class="date-wrap"><input type="text" name="Date_Remplacement" class="form-control date-input {% if errors.Date_Remplacement %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Remplacement','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Remplacement %}<div class="form-error">{{ errors.Date_Remplacement }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Technicien <span class="init">★ init</span></label>
+    <select name="Technicien" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in techniciens %}<option value="{{ v }}" {% if fd.get('Technicien')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Package associé <span class="init">★ init</span></label>
+    <select name="Code_Package" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in packages %}<option value="{{ v }}" {% if fd.get('Code_Package')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Observation <span class="init">★ init</span></label>
+    <textarea name="Observation" class="form-control">{{ fd.get('Observation','') }}</textarea>
+  </div>
+
+</div>
+<div class="form-footer">
+  <button type="submit" class="btn btn-success">{% if is_new %}➕ Créer{% else %}💾 Enregistrer{% endif %}</button>
+  <a href="{{ url_for('composants_list') }}" class="btn btn-secondary">Annuler</a>
+  {% if not is_new %}
+  <div style="flex:1"></div>
+  <button type="button" class="btn btn-danger"
+    onclick="openDelModal('{{ fd.get('Code_Composant','') }}','{{ fd.get('Nom_Composant','')|replace("'","\\'") }}','/composants/supprimer/{{ fd.get('Code_Composant','') }}')">🗑️ Supprimer</button>
+  {% endif %}
+</div>
+</form>
+</div></div>
+{% endblock %}

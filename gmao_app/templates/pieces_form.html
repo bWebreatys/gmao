@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">{% if is_new %}➕{% else %}✏️{% endif %} {{ title }}</div>
+  <a href="{{ url_for('pieces_list') }}" class="btn btn-secondary">← Retour</a>
+</div>
+<div class="card"><div class="card-header">🗄️ Fiche pièce / consommable</div><div class="card-body">
+<form method="post" action="{{ action }}" novalidate>
+<div class="form-grid">
+
+  <div class="form-section"><span class="form-section-title">🏷️ Identification</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Code_Piece <span class="req">*</span></label>
+    <div class="code-wrap">
+      <input type="text" name="Code_Piece" id="Code_Piece"
+             class="form-control {% if errors.Code_Piece %}is-invalid{% endif %}"
+             value="{{ fd.get('Code_Piece','') }}" {% if not is_new %}readonly{% endif %} maxlength="10">
+      {% if is_new %}<button type="button" class="btn-regen" onclick="regenCode('Code_Piece','PC','PIECES',3)">🔄</button>{% endif %}
+    </div>
+    {% if errors.Code_Piece %}<div class="form-error">{{ errors.Code_Piece }}</div>{% endif %}
+    <div class="form-hint">Format : PC001</div>
+  </div>
+
+  <div class="form-group span2">
+    <label class="form-label">Désignation <span class="req">*</span></label>
+    <input type="text" name="Designation" class="form-control {% if errors.Designation %}is-invalid{% endif %}"
+           value="{{ fd.get('Designation','') }}">
+    {% if errors.Designation %}<div class="form-error">{{ errors.Designation }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Catégorie</label>
+    <select name="Categorie" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Categorie_Piece %}<option value="{{ v }}" {% if fd.get('Categorie')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Équipement compatible <span class="init">★ initiative</span></label>
+    <select name="Equipement_Compatible" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in equipements %}<option value="{{ v }}" {% if fd.get('Equipement_Compatible')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-section"><span class="form-section-title">📦 Stock</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Stock actuel</label>
+    <input type="number" min="0" name="Stock_Actuel" class="form-control"
+           value="{{ fd.get('Stock_Actuel','') }}" placeholder="0">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Stock minimum</label>
+    <input type="number" min="0" name="Stock_Min" class="form-control"
+           value="{{ fd.get('Stock_Min','') }}" placeholder="Seuil d'alerte">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Stock maximum</label>
+    <input type="number" min="0" name="Stock_Max" class="form-control"
+           value="{{ fd.get('Stock_Max','') }}" placeholder="Quantité max à stocker">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Alerte stock <span class="init">★ initiative</span></label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Alerte_Stock','—') or '—' }}</div>
+    <div class="form-hint">Calculé : ⚠ STOCK BAS si actuel &lt; min</div>
+  </div>
+
+  <div class="form-section"><span class="form-section-title">💰 Approvisionnement</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Fournisseur</label>
+    <select name="Fournisseur" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in fournisseurs %}<option value="{{ v }}" {% if fd.get('Fournisseur')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Prix unitaire (€)</label>
+    <input type="number" step="0.01" min="0" name="Prix_Unitaire" class="form-control"
+           value="{{ fd.get('Prix_Unitaire','') }}" placeholder="0.00">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Dernière réception</label>
+    <div class="date-wrap"><input type="text" name="Derniere_Reception" class="form-control date-input {% if errors.Derniere_Reception %}is-invalid{% endif %}"
+      value="{{ fd.get('Derniere_Reception','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Derniere_Reception %}<div class="form-error">{{ errors.Derniere_Reception }}</div>{% endif %}
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Observation</label>
+    <textarea name="Observation" class="form-control">{{ fd.get('Observation','') }}</textarea>
+  </div>
+</div>
+<div class="form-footer">
+  <button type="submit" class="btn btn-success">{% if is_new %}➕ Créer{% else %}💾 Enregistrer{% endif %}</button>
+  <a href="{{ url_for('pieces_list') }}" class="btn btn-secondary">Annuler</a>
+  {% if not is_new %}
+  <div style="flex:1"></div>
+  <button type="button" class="btn btn-danger"
+    onclick="openDelModal('{{ fd.get('Code_Piece','') }}','{{ fd.get('Designation','')|replace("'","\\'") }}','/pieces/supprimer/{{ fd.get('Code_Piece','') }}')">🗑️ Supprimer</button>
+  {% endif %}
+</div>
+</form>
+</div></div>
+{% endblock %}

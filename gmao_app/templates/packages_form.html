@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">{% if is_new %}➕{% else %}✏️{% endif %} {{ title }}</div>
+  <a href="{{ url_for('packages_list') }}" class="btn btn-secondary">← Retour</a>
+</div>
+<div class="legend-init">⚠ Cet onglet est entièrement une <strong>initiative</strong>.</div>
+<div class="card"><div class="card-header">📦 Fiche package</div><div class="card-body">
+<form method="post" action="{{ action }}" novalidate>
+<div class="form-grid">
+  <div class="form-section init"><span class="form-section-title">★ Identification</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Code_Package <span class="req">*</span> <span class="init">★</span></label>
+    <div class="code-wrap">
+      <input type="text" name="Code_Package" id="Code_Package"
+             class="form-control {% if errors.Code_Package %}is-invalid{% endif %}"
+             value="{{ fd.get('Code_Package','') }}" {% if not is_new %}readonly{% endif %} maxlength="10">
+      {% if is_new %}<button type="button" class="btn-regen" onclick="regenCode('Code_Package','PKG','PACKAGES',3)">🔄</button>{% endif %}
+    </div>
+    {% if errors.Code_Package %}<div class="form-error">{{ errors.Code_Package }}</div>{% endif %}
+    <div class="form-hint">Format : PKG001</div>
+  </div>
+
+  <div class="form-group span2">
+    <label class="form-label">Nom du package <span class="req">*</span> <span class="init">★</span></label>
+    <input type="text" name="Nom_Package" class="form-control {% if errors.Nom_Package %}is-invalid{% endif %}"
+           value="{{ fd.get('Nom_Package','') }}" placeholder="Ex: Pack PC Portable HP">
+    {% if errors.Nom_Package %}<div class="form-error">{{ errors.Nom_Package }}</div>{% endif %}
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Description <span class="init">★</span></label>
+    <textarea name="Description" class="form-control" placeholder="Équipements inclus dans ce package…">{{ fd.get('Description','') }}</textarea>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Service <span class="init">★</span></label>
+    <select name="Service" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Service %}<option value="{{ v }}" {% if fd.get('Service')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Technicien référent <span class="init">★</span></label>
+    <select name="Technicien_Referent" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in techniciens %}<option value="{{ v }}" {% if fd.get('Technicien_Referent')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Date création <span class="init">★</span></label>
+    <div class="date-wrap"><input type="text" name="Date_Creation" class="form-control date-input {% if errors.Date_Creation %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Creation','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Creation %}<div class="form-error">{{ errors.Date_Creation }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Statut <span class="init">★</span></label>
+    <select name="Statut_Package" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in statuts %}<option value="{{ v }}" {% if fd.get('Statut_Package')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Nb équipements <span class="init">★</span></label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Nb_Equip_Package','—') or '—' }}</div>
+    <div class="form-hint">Calculé (COUNTIF EQUIPEMENTS)</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Composants défectueux <span class="init">★</span></label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Nb_Composants_Def','—') or '—' }}</div>
+    <div class="form-hint">Calculé (COUNTIFS COMPOSANTS)</div>
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Observation <span class="init">★</span></label>
+    <textarea name="Observation" class="form-control">{{ fd.get('Observation','') }}</textarea>
+  </div>
+</div>
+<div class="form-footer">
+  <button type="submit" class="btn btn-success">{% if is_new %}➕ Créer{% else %}💾 Enregistrer{% endif %}</button>
+  <a href="{{ url_for('packages_list') }}" class="btn btn-secondary">Annuler</a>
+  {% if not is_new %}
+  <div style="flex:1"></div>
+  <button type="button" class="btn btn-danger"
+    onclick="openDelModal('{{ fd.get('Code_Package','') }}','{{ fd.get('Nom_Package','')|replace("'","\\'") }}','/packages/supprimer/{{ fd.get('Code_Package','') }}')">🗑️ Supprimer</button>
+  {% endif %}
+</div>
+</form>
+</div></div>
+{% endblock %}

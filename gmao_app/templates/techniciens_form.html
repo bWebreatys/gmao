@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">{% if is_new %}➕{% else %}✏️{% endif %} {{ title }}</div>
+  <a href="{{ url_for('techniciens_list') }}" class="btn btn-secondary">← Retour</a>
+</div>
+<div class="card"><div class="card-header">👷 Fiche technicien</div><div class="card-body">
+<form method="post" action="{{ action }}" novalidate>
+<div class="form-grid">
+
+  <div class="form-section"><span class="form-section-title">🏷️ Identité</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Code_Tech <span class="req">*</span></label>
+    <div class="code-wrap">
+      <input type="text" name="Code_Tech" id="Code_Tech"
+             class="form-control {% if errors.Code_Tech %}is-invalid{% endif %}"
+             value="{{ fd.get('Code_Tech','') }}" {% if not is_new %}readonly{% endif %} maxlength="8">
+      {% if is_new %}<button type="button" class="btn-regen" onclick="regenCode('Code_Tech','TECH','TECHNICIENS',2)">🔄</button>{% endif %}
+    </div>
+    {% if errors.Code_Tech %}<div class="form-error">{{ errors.Code_Tech }}</div>{% endif %}
+    <div class="form-hint">Format : TECH01</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Nom <span class="req">*</span></label>
+    <input type="text" name="Nom" class="form-control {% if errors.Nom %}is-invalid{% endif %}"
+           value="{{ fd.get('Nom','') }}">
+    {% if errors.Nom %}<div class="form-error">{{ errors.Nom }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Prénom <span class="req">*</span></label>
+    <input type="text" name="Prenom" class="form-control {% if errors.Prenom %}is-invalid{% endif %}"
+           value="{{ fd.get('Prenom','') }}">
+    {% if errors.Prenom %}<div class="form-error">{{ errors.Prenom }}</div>{% endif %}
+  </div>
+
+  <div class="form-group span2">
+    <label class="form-label">Fonction</label>
+    <input type="text" name="Fonction" class="form-control" value="{{ fd.get('Fonction','') }}"
+           placeholder="Ex: Technicien biomédical, Ingénieur…">
+  </div>
+
+  <div class="form-section"><span class="form-section-title">🎓 Qualification</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Niveau de qualification</label>
+    <select name="Niveau_Qualification" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Niveau_Qualification %}<option value="{{ v }}" {% if fd.get('Niveau_Qualification')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Expérience (années)</label>
+    <input type="number" min="0" max="50" name="Experience_Annees" class="form-control"
+           value="{{ fd.get('Experience_Annees','') }}" placeholder="0">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Service rattachement</label>
+    <select name="Service_Rattachement" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Service %}<option value="{{ v }}" {% if fd.get('Service_Rattachement')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Charge interventions <span class="init">★ initiative</span></label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Charge_Interventions','—') or '—' }}</div>
+    <div class="form-hint">Calculé (COUNTIF INTERVENTIONS)</div>
+  </div>
+
+  <div class="form-section"><span class="form-section-title">📞 Contact</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Téléphone</label>
+    <input type="text" name="Tel" class="form-control" value="{{ fd.get('Tel','') }}" placeholder="06 XX XX XX XX">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Email</label>
+    <input type="email" name="Email" class="form-control" value="{{ fd.get('Email','') }}" placeholder="prenom.nom@hopital.fr">
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Formations / habilitations</label>
+    <textarea name="Formations" class="form-control" placeholder="Formation GMAO, habilitation électrique, certifications…">{{ fd.get('Formations','') }}</textarea>
+  </div>
+
+</div>
+<div class="form-footer">
+  <button type="submit" class="btn btn-success">{% if is_new %}➕ Créer{% else %}💾 Enregistrer{% endif %}</button>
+  <a href="{{ url_for('techniciens_list') }}" class="btn btn-secondary">Annuler</a>
+  {% if not is_new %}
+  <div style="flex:1"></div>
+  <button type="button" class="btn btn-danger"
+    onclick="openDelModal('{{ fd.get('Code_Tech','') }}','{{ fd.get('Nom','') }} {{ fd.get('Prenom','') }}','/techniciens/supprimer/{{ fd.get('Code_Tech','') }}')">🗑️ Supprimer</button>
+  {% endif %}
+</div>
+</form>
+</div></div>
+{% endblock %}

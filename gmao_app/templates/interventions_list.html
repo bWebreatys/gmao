@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Interventions{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🛠️ Interventions <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('interventions_new') }}" class="btn btn-success">➕ Nouvelle intervention</a>
+</div>
+<form method="get"><div class="filter-bar">
+  <div class="filter-group"><label>🔍 Recherche</label>
+    <input type="text" name="q" value="{{ search }}" placeholder="Code, équipement, description…" autocomplete="off"></div>
+  <div class="filter-group"><label>Statut</label>
+    <select name="statut"><option value="">— Tous —</option>
+      {% for v in statuts %}<option value="{{ v }}" {% if v==f_stat %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div class="filter-group"><label>Type</label>
+    <select name="type"><option value="">— Tous —</option>
+      {% for v in types %}<option value="{{ v }}" {% if v==f_type %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div class="filter-group"><label>Équipement</label>
+    <select name="eq"><option value="">— Tous —</option>
+      {% for v in equipements %}<option value="{{ v }}" {% if v==f_eq %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+</div></form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code</th><th>Équipement</th><th>Type</th><th>Origine</th>
+    <th>Date demande</th><th>Technicien</th><th>Statut</th>
+    <th>Durée (h)</th><th>Jours ouvert</th><th>Composant lié</th>
+    <th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  {% set sc = {'Ouverte':'statut-ouverte','En cours':'statut-en-cours','Clôturée':'statut-cloturee','Non résolue':'statut-non-resolue'}.get(r.Statut,'') %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_Intervention }}</strong></td>
+    <td>{{ r.Code_Equipement }}</td>
+    <td>{{ r.Type_Intervention }}</td>
+    <td class="text-muted">{{ r.Origine_Demande }}</td>
+    <td>{{ r.Date_Demande }}</td>
+    <td class="text-muted">{{ r.Technicien }}</td>
+    <td>{% if r.Statut %}<span class="badge-statut {{ sc }}">{{ r.Statut }}</span>{% endif %}</td>
+    <td style="text-align:center">{{ r.Duree_Intervention_H }}</td>
+    <td>{% if r.Jours_Ouvert %}<span style="{% if r.Jours_Ouvert|int > 14 %}color:#dc3545{% elif r.Jours_Ouvert|int > 7 %}color:#856404{% endif %};font-weight:600">{{ r.Jours_Ouvert }}j</span>{% endif %}</td>
+    <td class="text-muted" style="font-size:.78rem">{{ r.Code_Composant_Lie }}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('interventions_edit', code=r.Code_Intervention) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_Intervention }}','{{ r.Code_Intervention }}','/interventions/supprimer/{{ r.Code_Intervention }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">🛠️</div><p>Aucune intervention.</p></div>{% endif %}
+</div></div>
+{% endblock %}

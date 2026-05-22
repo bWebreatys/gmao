@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Maintenance préventive{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🗓️ Maintenance préventive <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('maint_prev_new') }}" class="btn btn-success">➕ Nouvelle MP</a>
+</div>
+<form method="get"><div class="filter-bar">
+  <div class="filter-group"><label>🔍 Recherche</label>
+    <input type="text" name="q" value="{{ search }}" placeholder="Code MP, équipement…" autocomplete="off"></div>
+  <div class="filter-group"><label>Statut</label>
+    <select name="statut"><option value="">— Tous —</option>
+      {% for v in statuts %}<option value="{{ v }}" {% if v==f_stat %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div class="filter-group"><label>Équipement</label>
+    <select name="eq"><option value="">— Tous —</option>
+      {% for v in equipements %}<option value="{{ v }}" {% if v==f_eq %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+</div></form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code MP</th><th>Équipement</th><th>Désignation</th><th>Type</th>
+    <th>Date prévue</th><th>Technicien</th><th>Statut</th>
+    <th>Date réalisation</th><th>Retard (j)</th>
+    <th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  {% set sc = {'Planifiée':'statut-planifiee','Réalisée':'statut-realisee','En cours':'statut-en-cours','Reportée':'statut-en-cours','Annulée':'statut-cloturee'}.get(r.Statut,'') %}
+  {% set retard = r.Retard_Jours|string %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_MP }}</strong></td>
+    <td>{{ r.Code_Equipement }}</td>
+    <td class="text-muted">{{ r.Designation }}</td>
+    <td>{{ r.Type_Maintenance }}</td>
+    <td>{{ r.Date_Prevue }}</td>
+    <td class="text-muted">{{ r.Technicien_Assigne }}</td>
+    <td>{% if r.Statut %}<span class="badge-statut {{ sc }}">{{ r.Statut }}</span>{% endif %}</td>
+    <td>{{ r.Date_Realisation }}</td>
+    <td>{% if r.Retard_Jours %}<span style="color:#dc3545;font-weight:700">{{ r.Retard_Jours }}j</span>{% endif %}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('maint_prev_edit', code=r.Code_MP) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_MP }}','{{ r.Code_MP }}','/maint_prev/supprimer/{{ r.Code_MP }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">🗓️</div><p>Aucune maintenance préventive.</p></div>{% endif %}
+</div></div>
+{% endblock %}

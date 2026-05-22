@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">{% if is_new %}➕{% else %}✏️{% endif %} {{ title }}</div>
+  <a href="{{ url_for('maint_prev_list') }}" class="btn btn-secondary">← Retour</a>
+</div>
+<div class="card"><div class="card-header">🗓️ Fiche maintenance préventive</div><div class="card-body">
+<form method="post" action="{{ action }}" novalidate>
+<div class="form-grid">
+
+  <div class="form-section"><span class="form-section-title">📋 Planification</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Code_MP <span class="req">*</span></label>
+    <div class="code-wrap">
+      <input type="text" name="Code_MP" id="Code_MP"
+             class="form-control {% if errors.Code_MP %}is-invalid{% endif %}"
+             value="{{ fd.get('Code_MP','') }}" {% if not is_new %}readonly{% endif %} maxlength="10">
+      {% if is_new %}<button type="button" class="btn-regen" onclick="regenCode('Code_MP','MP','MAINT_PREV',4)">🔄</button>{% endif %}
+    </div>
+    {% if errors.Code_MP %}<div class="form-error">{{ errors.Code_MP }}</div>{% endif %}
+    <div class="form-hint">Format : MP0001</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Équipement <span class="req">*</span></label>
+    <select name="Code_Equipement" class="form-control {% if errors.Code_Equipement %}is-invalid{% endif %}">
+      <option value="">— Choisir —</option>
+      {% for v in equipements %}<option value="{{ v }}" {% if fd.get('Code_Equipement')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+    {% if errors.Code_Equipement %}<div class="form-error">{{ errors.Code_Equipement }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Désignation</label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Designation','—') or '—' }}</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Type de maintenance <span class="req">*</span></label>
+    <select name="Type_Maintenance" class="form-control {% if errors.Type_Maintenance %}is-invalid{% endif %}">
+      <option value="">— Choisir —</option>
+      {% for v in L.Type_MP %}<option value="{{ v }}" {% if fd.get('Type_Maintenance')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+    {% if errors.Type_Maintenance %}<div class="form-error">{{ errors.Type_Maintenance }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Date prévue <span class="req">*</span></label>
+    <div class="date-wrap"><input type="text" name="Date_Prevue" class="form-control date-input {% if errors.Date_Prevue %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Prevue','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Prevue %}<div class="form-error">{{ errors.Date_Prevue }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Technicien assigné</label>
+    <select name="Technicien_Assigne" class="form-control">
+      <option value="">— Aucun —</option>
+      {% for v in techniciens %}<option value="{{ v }}" {% if fd.get('Technicien_Assigne')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Statut</label>
+    <select name="Statut" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Statut_MP %}<option value="{{ v }}" {% if fd.get('Statut')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-section"><span class="form-section-title">✅ Réalisation</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Date réalisation</label>
+    <div class="date-wrap"><input type="text" name="Date_Realisation" class="form-control date-input {% if errors.Date_Realisation %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Realisation','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Realisation %}<div class="form-error">{{ errors.Date_Realisation }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Temps passé (heures)</label>
+    <input type="number" step="0.5" min="0" name="Temps_Passe_Heures" class="form-control"
+           value="{{ fd.get('Temps_Passe_Heures','') }}" placeholder="Ex: 2.5">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Retard (jours) <span class="init">★ initiative</span></label>
+    <div class="formula-field"><span class="formula-badge">Σ</span>{{ fd.get('Retard_Jours','—') or '—' }}</div>
+    <div class="form-hint">Calculé automatiquement si MP en retard</div>
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Observation</label>
+    <textarea name="Observation" class="form-control" placeholder="Anomalies constatées, pièces remplacées…">{{ fd.get('Observation','') }}</textarea>
+  </div>
+
+</div>
+<div class="form-footer">
+  <button type="submit" class="btn btn-success">{% if is_new %}➕ Créer{% else %}💾 Enregistrer{% endif %}</button>
+  <a href="{{ url_for('maint_prev_list') }}" class="btn btn-secondary">Annuler</a>
+  {% if not is_new %}
+  <div style="flex:1"></div>
+  <button type="button" class="btn btn-danger"
+    onclick="openDelModal('{{ fd.get('Code_MP','') }}','{{ fd.get('Code_MP','') }}','/maint_prev/supprimer/{{ fd.get('Code_MP','') }}')">🗑️ Supprimer</button>
+  {% endif %}
+</div>
+</form>
+</div></div>
+{% endblock %}

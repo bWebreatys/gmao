@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Techniciens{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">👷 Techniciens <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('techniciens_new') }}" class="btn btn-success">➕ Nouveau technicien</a>
+</div>
+<form method="get"><div class="filter-bar">
+  <div class="filter-group"><label>🔍 Recherche</label>
+    <input type="text" name="q" value="{{ search }}" placeholder="Nom, prénom, code…" autocomplete="off"></div>
+  <div class="filter-group"><label>Service</label>
+    <select name="service"><option value="">— Tous —</option>
+      {% for v in services %}<option value="{{ v }}" {% if v==f_serv %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+</div></form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code</th><th>Nom</th><th>Prénom</th><th>Fonction</th><th>Qualification</th>
+    <th>Expérience</th><th>Service</th><th>Téléphone</th>
+    <th style="text-align:center">Nb interventions</th>
+    <th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_Tech }}</strong></td>
+    <td>{{ r.Nom }}</td>
+    <td>{{ r.Prenom }}</td>
+    <td class="text-muted">{{ r.Fonction }}</td>
+    <td class="text-muted" style="font-size:.80rem">{{ r.Niveau_Qualification }}</td>
+    <td style="text-align:center">{{ r.Experience_Annees }}{% if r.Experience_Annees %} ans{% endif %}</td>
+    <td class="text-muted">{{ r.Service_Rattachement }}</td>
+    <td class="text-muted">{{ r.Tel }}</td>
+    <td style="text-align:center;font-weight:600">{{ r.Charge_Interventions }}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('techniciens_edit', code=r.Code_Tech) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_Tech }}','{{ r.Nom }} {{ r.Prenom }}','/techniciens/supprimer/{{ r.Code_Tech }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">👷</div><p>Aucun technicien.</p></div>{% endif %}
+</div></div>
+{% endblock %}

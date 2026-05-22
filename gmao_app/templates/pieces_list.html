@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Pièces détachées{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🗄️ Pièces détachées <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('pieces_new') }}" class="btn btn-success">➕ Nouvelle pièce</a>
+</div>
+<form method="get"><div class="filter-bar">
+  <div class="filter-group"><label>🔍 Recherche</label>
+    <input type="text" name="q" value="{{ search }}" placeholder="Code, désignation…" autocomplete="off"></div>
+  <div class="filter-group"><label>Catégorie</label>
+    <select name="categorie"><option value="">— Toutes —</option>
+      {% for v in categories %}<option value="{{ v }}" {% if v==f_cat %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div class="filter-group"><label>Alertes stock</label>
+    <select name="alerte">
+      <option value="">— Toutes —</option>
+      <option value="1" {% if f_alert=='1' %}selected{% endif %}>⚠ Stock bas seulement</option>
+    </select></div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+</div></form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code</th><th>Désignation</th><th>Catégorie</th><th>EQ compatible</th>
+    <th style="text-align:center">Stock actuel</th><th style="text-align:center">Min</th>
+    <th style="text-align:center">Max</th><th>Fournisseur</th>
+    <th style="text-align:right">Prix unitaire</th><th>Alerte</th>
+    <th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_Piece }}</strong></td>
+    <td>{{ r.Designation }}</td>
+    <td class="text-muted">{{ r.Categorie }}</td>
+    <td class="text-muted">{{ r.Equipement_Compatible }}</td>
+    <td style="text-align:center;font-weight:600">{{ r.Stock_Actuel }}</td>
+    <td style="text-align:center;color:#6b7280">{{ r.Stock_Min }}</td>
+    <td style="text-align:center;color:#6b7280">{{ r.Stock_Max }}</td>
+    <td class="text-muted">{{ r.Fournisseur }}</td>
+    <td style="text-align:right">{{ r.Prix_Unitaire }}{% if r.Prix_Unitaire %} €{% endif %}</td>
+    <td>{% if r.Alerte_Stock %}
+      <span class="badge-statut {% if '⚠' in r.Alerte_Stock|string %}statut-ouverte{% else %}statut-realisee{% endif %}">
+        {{ r.Alerte_Stock }}</span>{% endif %}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('pieces_edit', code=r.Code_Piece) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_Piece }}','{{ r.Designation|replace("'","\\'")|replace('"',"&quot;") }}','/pieces/supprimer/{{ r.Code_Piece }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">🗄️</div><p>Aucune pièce.</p></div>{% endif %}
+</div></div>
+{% endblock %}

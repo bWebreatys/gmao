@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Packages{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">📦 Packages <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('packages_new') }}" class="btn btn-success">➕ Nouveau package</a>
+</div>
+<form method="get"><div class="filter-bar">
+  <div class="filter-group"><label>🔍 Recherche</label>
+    <input type="text" name="q" value="{{ search }}" placeholder="Code, nom…" autocomplete="off"></div>
+  <div class="filter-group"><label>Statut</label>
+    <select name="statut"><option value="">— Tous —</option>
+      {% for v in statuts %}<option value="{{ v }}" {% if v==f_stat %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+</div></form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code</th><th>Nom</th><th>Service</th><th>Technicien</th>
+    <th>Statut</th><th>Nb équipements</th><th>Composants déf.</th><th>Date création</th>
+    <th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  {% set sc = {'Actif':'statut-realisee','Incomplet':'statut-en-cours','Hors service':'statut-ouverte','Archivé':'statut-cloturee'}.get(r.Statut_Package,'') %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_Package }}</strong></td>
+    <td>{{ r.Nom_Package }}</td>
+    <td class="text-muted">{{ r.Service }}</td>
+    <td class="text-muted">{{ r.Technicien_Referent }}</td>
+    <td>{% if r.Statut_Package %}<span class="badge-statut {{ sc }}">{{ r.Statut_Package }}</span>{% endif %}</td>
+    <td style="text-align:center">{{ r.Nb_Equip_Package }}</td>
+    <td style="text-align:center">{% if r.Nb_Composants_Def %}
+      <span style="color:#dc3545;font-weight:700">{{ r.Nb_Composants_Def }}</span>{% endif %}</td>
+    <td class="text-muted">{{ r.Date_Creation }}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('packages_edit', code=r.Code_Package) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_Package }}','{{ r.Nom_Package|replace("'","\\'")|replace('"',"&quot;") }}','/packages/supprimer/{{ r.Code_Package }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">📦</div><p>Aucun package.</p></div>{% endif %}
+</div></div>
+{% endblock %}

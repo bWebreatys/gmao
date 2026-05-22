@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Équipements{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title">
+    <span class="icon">🔧</span>
+    Équipements
+    <span class="count-badge">{{ rows|length }} ligne{% if rows|length > 1 %}s{% endif %}</span>
+  </div>
+  <a href="{{ url_for('equipements_new') }}" class="btn btn-success">
+    ➕ Nouvel équipement
+  </a>
+</div>
+
+<!-- Filtres -->
+<form method="get" action="{{ url_for('equipements_list') }}">
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>🔍 Recherche libre</label>
+      <input type="text" name="q" value="{{ search }}"
+             placeholder="Code, désignation, service…" autocomplete="off">
+    </div>
+    <div class="filter-group">
+      <label>État</label>
+      <select name="etat">
+        <option value="">— Tous —</option>
+        {% for e in etats %}
+          <option value="{{ e }}" {% if e == filtre_etat %}selected{% endif %}>{{ e }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Criticité</label>
+      <select name="criticite">
+        <option value="">— Toutes —</option>
+        {% for c in criticites %}
+          <option value="{{ c }}" {% if c == filtre_crit %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+      <a href="{{ url_for('equipements_list') }}" class="btn btn-secondary btn-sm">Réinitialiser</a>
+    </div>
+  </div>
+</form>
+
+<!-- Tableau -->
+<div class="card">
+  <div class="table-wrap">
+    {% if rows %}
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Désignation</th>
+          <th>Catégorie</th>
+          <th>Criticité</th>
+          <th>Service</th>
+          <th>Marque / Modèle</th>
+          <th>État</th>
+          <th>Prochaine MP</th>
+          <th>Package</th>
+          <th style="text-align:center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        {% set etat_class = {
+          'En service':     'etat-en-service',
+          'En panne':       'etat-en-panne',
+          'En maintenance': 'etat-en-maintenance',
+          'Hors service':   'etat-hors-service',
+          'Mis au rebut':   'etat-mis-au-rebut'
+        }.get(r.Etat, '') %}
+        {% set crit_class = {
+          'Haute':   'crit-haute',
+          'Moyenne': 'crit-moyenne',
+          'Basse':   'crit-basse'
+        }.get(r.Criticite, '') %}
+        <tr class="{% if loop.index is odd %}alt{% endif %}">
+          <td><strong>{{ r.Code_Equipement }}</strong></td>
+          <td>{{ r.Designation }}</td>
+          <td>{{ r.Categorie }}</td>
+          <td>
+            {% if r.Criticite %}
+              <span class="badge-crit {{ crit_class }}">{{ r.Criticite }}</span>
+            {% endif %}
+          </td>
+          <td>{{ r.Service }}</td>
+          <td class="text-muted">{{ r.Marque }}{% if r.Marque and r.Modele %} – {% endif %}{{ r.Modele }}</td>
+          <td>
+            {% if r.Etat %}
+              <span class="badge-etat {{ etat_class }}">{{ r.Etat }}</span>
+            {% endif %}
+          </td>
+          <td class="text-muted">{{ r.Prochaine_Maintenance }}</td>
+          <td class="text-muted" style="font-size:.8rem">{{ r.Code_Package }}</td>
+          <td style="text-align:center; white-space:nowrap">
+            <a href="{{ url_for('equipements_edit', code=r.Code_Equipement) }}"
+               class="btn btn-warning btn-sm">✏️ Modifier</a>
+            <button class="btn btn-danger btn-sm"
+                    onclick="confirmDelete('{{ r.Code_Equipement }}', '{{ r.Designation|replace("'", "\\'") }}')">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div style="padding:40px;text-align:center;color:#6b7280">
+      <div style="font-size:2.5rem;margin-bottom:10px">📋</div>
+      <p>Aucun équipement trouvé.
+        {% if search or filtre_etat or filtre_crit %}
+          <a href="{{ url_for('equipements_list') }}">Réinitialiser les filtres</a>
+        {% else %}
+          <a href="{{ url_for('equipements_new') }}">Ajouter le premier</a>.
+        {% endif %}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Modal suppression -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal-box">
+    <div class="modal-title">⚠️ Confirmer la suppression</div>
+    <p>Supprimer l'équipement <strong id="modal-code"></strong> – <em id="modal-label"></em> ?</p>
+    <p class="text-muted" style="font-size:.82rem;margin-top:8px">
+      Les lignes de maintenance préventive et d'interventions associées ne seront pas supprimées.
+    </p>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <form id="form-delete" method="post">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function confirmDelete(code, label) {
+    document.getElementById('modal-code').textContent  = code;
+    document.getElementById('modal-label').textContent = label;
+    document.getElementById('form-delete').action = '/equipements/supprimer/' + encodeURIComponent(code);
+    document.getElementById('modal-delete').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('modal-delete').classList.remove('open');
+  }
+  document.getElementById('modal-delete').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+{% endblock %}

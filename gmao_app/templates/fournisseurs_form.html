@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">{% if is_new %}➕{% else %}✏️{% endif %} {{ title }}</div>
+  <a href="{{ url_for('fournisseurs_list') }}" class="btn btn-secondary">← Retour</a>
+</div>
+<div class="card"><div class="card-header">🏢 Fiche fournisseur</div><div class="card-body">
+<form method="post" action="{{ action }}" novalidate>
+<div class="form-grid">
+
+  <div class="form-section"><span class="form-section-title">🏷️ Identification</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Code_Fournisseur <span class="req">*</span></label>
+    <div class="code-wrap">
+      <input type="text" name="Code_Fournisseur" id="Code_Fournisseur"
+             class="form-control {% if errors.Code_Fournisseur %}is-invalid{% endif %}"
+             value="{{ fd.get('Code_Fournisseur','') }}" {% if not is_new %}readonly{% endif %} maxlength="10">
+      {% if is_new %}<button type="button" class="btn-regen" onclick="regenCode('Code_Fournisseur','FOUR','FOURNISSEURS',3)">🔄</button>{% endif %}
+    </div>
+    {% if errors.Code_Fournisseur %}<div class="form-error">{{ errors.Code_Fournisseur }}</div>{% endif %}
+    <div class="form-hint">Format : FOUR001</div>
+  </div>
+
+  <div class="form-group span2">
+    <label class="form-label">Nom fournisseur <span class="req">*</span></label>
+    <input type="text" name="Nom_Fournisseur" class="form-control {% if errors.Nom_Fournisseur %}is-invalid{% endif %}"
+           value="{{ fd.get('Nom_Fournisseur','') }}">
+    {% if errors.Nom_Fournisseur %}<div class="form-error">{{ errors.Nom_Fournisseur }}</div>{% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Type</label>
+    <select name="Type" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Type_Fournisseur %}<option value="{{ v }}" {% if fd.get('Type')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-section"><span class="form-section-title">📞 Contact</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Nom contact</label>
+    <input type="text" name="Contact" class="form-control" value="{{ fd.get('Contact','') }}">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Téléphone</label>
+    <input type="text" name="Telephone" class="form-control" value="{{ fd.get('Telephone','') }}" placeholder="01 23 45 67 89">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Email</label>
+    <input type="email" name="Email" class="form-control" value="{{ fd.get('Email','') }}" placeholder="contact@fournisseur.fr">
+  </div>
+
+  <div class="form-section"><span class="form-section-title">📄 Contrat</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Contrat</label>
+    <select name="Contrat" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.OuiNon %}<option value="{{ v }}" {% if fd.get('Contrat')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Début contrat</label>
+    <div class="date-wrap"><input type="text" name="Date_Debut_Contrat" class="form-control date-input {% if errors.Date_Debut_Contrat %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Debut_Contrat','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Debut_Contrat %}<div class="form-error">{{ errors.Date_Debut_Contrat }}</div>{% endif %}
+  </div>
+  <div class="form-group">
+    <label class="form-label">Fin contrat</label>
+    <div class="date-wrap"><input type="text" name="Date_Fin_Contrat" class="form-control date-input {% if errors.Date_Fin_Contrat %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Fin_Contrat','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Fin_Contrat %}<div class="form-error">{{ errors.Date_Fin_Contrat }}</div>{% endif %}
+  </div>
+  <div class="form-group">
+    <label class="form-label">Délai livraison (jours) <span class="init">★ initiative</span></label>
+    <input type="number" min="0" name="Delai_Livraison_Jours" class="form-control"
+           value="{{ fd.get('Delai_Livraison_Jours','') }}" placeholder="Ex: 5">
+  </div>
+
+  <div class="form-group span3">
+    <label class="form-label">Observation</label>
+    <textarea name="Observation" class="form-control">{{ fd.get('Observation','') }}</textarea>
+  </div>
+</div>
+<div class="form-footer">
+  <button type="submit" class="btn btn-success">{% if is_new %}➕ Créer{% else %}💾 Enregistrer{% endif %}</button>
+  <a href="{{ url_for('fournisseurs_list') }}" class="btn btn-secondary">Annuler</a>
+  {% if not is_new %}
+  <div style="flex:1"></div>
+  <button type="button" class="btn btn-danger"
+    onclick="openDelModal('{{ fd.get('Code_Fournisseur','') }}','{{ fd.get('Nom_Fournisseur','')|replace("'","\\'") }}','/fournisseurs/supprimer/{{ fd.get('Code_Fournisseur','') }}')">🗑️ Supprimer</button>
+  {% endif %}
+</div>
+</form>
+</div></div>
+{% endblock %}

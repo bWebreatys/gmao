@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Fournisseurs{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🏢 Fournisseurs <span class="count-badge">{{ rows|length }}</span></div>
+  <a href="{{ url_for('fournisseurs_new') }}" class="btn btn-success">➕ Nouveau fournisseur</a>
+</div>
+<form method="get"><div class="filter-bar">
+  <div class="filter-group"><label>🔍 Recherche</label>
+    <input type="text" name="q" value="{{ search }}" placeholder="Code, nom, contact…" autocomplete="off"></div>
+  <div class="filter-group"><label>Type</label>
+    <select name="type"><option value="">— Tous —</option>
+      {% for v in types %}<option value="{{ v }}" {% if v==f_type %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+    <a href="{{ request.path }}" class="btn btn-secondary btn-sm">Réinitialiser</a></div>
+</div></form>
+<div class="card"><div class="table-wrap">
+  {% if rows %}
+  <table><thead><tr>
+    <th>Code</th><th>Nom</th><th>Type</th><th>Contact</th><th>Téléphone</th>
+    <th>Email</th><th>Contrat</th><th>Fin contrat</th><th>Délai livr. (j)</th>
+    <th style="text-align:center">Actions</th>
+  </tr></thead><tbody>
+  {% for r in rows %}
+  <tr class="{% if loop.index is odd %}alt{% endif %}">
+    <td><strong>{{ r.Code_Fournisseur }}</strong></td>
+    <td>{{ r.Nom_Fournisseur }}</td>
+    <td class="text-muted">{{ r.Type }}</td>
+    <td class="text-muted">{{ r.Contact }}</td>
+    <td class="text-muted">{{ r.Telephone }}</td>
+    <td class="text-muted" style="font-size:.80rem">{{ r.Email }}</td>
+    <td>{% if r.Contrat=='Oui' %}<span class="badge-statut statut-realisee">Oui</span>
+        {% elif r.Contrat=='Non' %}<span class="badge-statut statut-cloturee">Non</span>{% endif %}</td>
+    <td class="text-muted">{{ r.Date_Fin_Contrat }}</td>
+    <td style="text-align:center">{{ r.Delai_Livraison_Jours }}</td>
+    <td class="table-actions">
+      <a href="{{ url_for('fournisseurs_edit', code=r.Code_Fournisseur) }}" class="btn btn-warning btn-sm">✏️</a>
+      <button class="btn btn-danger btn-sm" onclick="openDelModal('{{ r.Code_Fournisseur }}','{{ r.Nom_Fournisseur|replace("'","\\'")|replace('"',"&quot;") }}','/fournisseurs/supprimer/{{ r.Code_Fournisseur }}')">🗑️</button>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty-state"><div class="icon">🏢</div><p>Aucun fournisseur.</p></div>{% endif %}
+</div></div>
+{% endblock %}
