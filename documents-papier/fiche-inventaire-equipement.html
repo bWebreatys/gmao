@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche d'inventaire - Équipement biomédical</title>
+<style>
+  @page { size: A4; margin: 9mm 12mm 8mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: "DejaVu Sans", "Liberation Sans", sans-serif;
+    color: #1a1a1a; font-size: 9pt; line-height: 1.16; margin: 0;
+  }
+  .title-bar { display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 2.5pt solid #1F4E79; padding-bottom: 5px; }
+  .title-bar h1 { font-family: "DejaVu Serif", serif; color: #1F4E79;
+    font-size: 15pt; margin: 0 0 2px 0; letter-spacing: .2px; }
+  .subtitle { font-size: 8pt; color: #444; }
+  .ref-box { border: 1pt solid #1F4E79; padding: 4px 8px; min-width: 150px; font-size: 8pt; }
+  .ref-box .nlabel { color: #555; }
+  .ref-box .nval { display: inline-block; border-bottom: 1pt solid #999; min-width: 78px; }
+  .legend { font-size: 7.4pt; color: #555; margin: 4px 0 5px 0; }
+  .legend .star { color: #C00000; font-weight: bold; }
+
+  .sec { margin-top: 4px; }
+  .sec-h { background: #1F4E79; color: #fff; font-weight: bold; font-size: 8.4pt;
+    padding: 2px 7px; letter-spacing: .3px; text-transform: uppercase; }
+  .sec-b { border: 1pt solid #c9d4e0; border-top: none; padding: 4px 8px; }
+
+  .row { display: flex; flex-wrap: wrap; gap: 3px 16px; margin-bottom: 3px; }
+  .f { display: flex; align-items: baseline; gap: 5px; flex: 1 1 auto; min-width: 0; }
+  .f.full { flex-basis: 100%; }
+  .f.half { flex-basis: 46%; }
+  .lbl { color: #1a1a1a; white-space: nowrap; }
+  .lbl.ini { color: #C00000; }
+  .lbl.ini::after { content: " \2605"; font-size: 7.5pt; }
+  .fill { flex: 1 1 auto; border-bottom: 1pt dotted #888; min-height: 13px; min-width: 40px; }
+  .date-cells { letter-spacing: 1px; color: #777; font-size: 8.5pt; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+  .opt { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .cb { display: inline-block; width: 8px; height: 8px; border: 1pt solid #333; vertical-align: -1px; }
+
+  .obs-lines { border: 1pt solid #c9d4e0; border-top: none; height: 32px;
+    background-image: repeating-linear-gradient(#fff 0, #fff 13px, #dde4ec 14px); }
+  .note-calc { font-size: 7.6pt; color: #666; font-style: italic; margin-top: 4px; }
+  .footer { margin-top: 6px; border-top: 1pt solid #1F4E79; padding-top: 4px;
+    font-size: 7.2pt; color: #555; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+  <div class="title-bar">
+    <div>
+      <h1>Fiche d'inventaire &ndash; Équipement biomédical</h1>
+      <div class="subtitle">GMAO &ndash; Projet Offre de Soins &middot; Union des Comores &middot; Expertise France / AFD</div>
+    </div>
+    <div class="ref-box">
+      <div><span class="nlabel">N&deg; EQ (outil) :</span> <span class="nval">&nbsp;</span></div>
+      <div style="margin-top:4px"><span class="nlabel">Date saisie :</span>
+        <span class="date-cells">__/__/____</span></div>
+      <div style="margin-top:4px"><span class="nlabel">Saisi par :</span> <span class="nval">&nbsp;</span></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    Remplir à la main, une fiche par équipement, puis reporter dans l'écran EQUIPEMENTS de la GMAO.
+    Libellés en noir : champs du cahier des charges. Libellés en
+    <span class="star">rouge &#9733;</span> : champs ajoutés d'après le modèle d'inventaire (Annexe 4, rapport P. Lopes).
+  </div>
+
+  <!-- ÉTABLISSEMENT -->
+  <div class="sec">
+    <div class="sec-h">Établissement</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f half"><span class="lbl">Établissement / Hôpital :</span><span class="fill"></span></div>
+        <div class="f half"><span class="lbl ini">Île :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Ngazidja</span>
+            <span class="opt"><span class="cb"></span> Anjouan</span>
+            <span class="opt"><span class="cb"></span> Mohéli</span>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="f full"><span class="lbl">Service :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Réanimation</span>
+            <span class="opt"><span class="cb"></span> Urgences</span>
+            <span class="opt"><span class="cb"></span> Bloc opératoire</span>
+            <span class="opt"><span class="cb"></span> Maternité</span>
+            <span class="opt"><span class="cb"></span> Laboratoire</span>
+            <span class="opt"><span class="cb"></span> Radiologie</span>
+            <span class="opt"><span class="cb"></span> Autre :</span>
+            <span class="fill" style="max-width:90px"></span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. IDENTIFICATION -->
+  <div class="sec">
+    <div class="sec-h">1 &middot; Identification</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f full"><span class="lbl">Désignation :</span><span class="fill"></span></div>
+      </div>
+      <div class="row">
+        <div class="f full"><span class="lbl ini">Désignation complémentaire :</span><span class="fill"></span></div>
+      </div>
+      <div class="row">
+        <div class="f full"><span class="lbl">Catégorie :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Monitoring</span>
+            <span class="opt"><span class="cb"></span> Imagerie</span>
+            <span class="opt"><span class="cb"></span> Bloc opératoire</span>
+            <span class="opt"><span class="cb"></span> Laboratoire</span>
+            <span class="opt"><span class="cb"></span> Stérilisation</span>
+            <span class="opt"><span class="cb"></span> Autre :</span>
+            <span class="fill" style="max-width:90px"></span>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="f half"><span class="lbl">Criticité :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Haute</span>
+            <span class="opt"><span class="cb"></span> Moyenne</span>
+            <span class="opt"><span class="cb"></span> Basse</span>
+          </span>
+        </div>
+        <div class="f half"><span class="lbl">Localisation (bât. / salle) :</span><span class="fill"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. TECHNIQUE -->
+  <div class="sec">
+    <div class="sec-h">2 &middot; Technique</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f half"><span class="lbl">Marque :</span><span class="fill"></span></div>
+        <div class="f half"><span class="lbl">Modèle :</span><span class="fill"></span></div>
+      </div>
+      <div class="row">
+        <div class="f full"><span class="lbl">N&deg; de série :</span><span class="fill"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PROVENANCE & DONS -->
+  <div class="sec">
+    <div class="sec-h">3 &middot; Provenance et dons</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f full"><span class="lbl ini">Provenance :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Achat ministère</span>
+            <span class="opt"><span class="cb"></span> Don OMS</span>
+            <span class="opt"><span class="cb"></span> Don Émirats</span>
+            <span class="opt"><span class="cb"></span> Don ONG</span>
+            <span class="opt"><span class="cb"></span> Don diaspora</span>
+            <span class="opt"><span class="cb"></span> Achat établissement</span>
+            <span class="opt"><span class="cb"></span> Autre</span>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="f half"><span class="lbl ini">Conformité charte des dons :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Oui</span>
+            <span class="opt"><span class="cb"></span> Non</span>
+            <span class="opt"><span class="cb"></span> Non concerné</span>
+          </span>
+        </div>
+        <div class="f half"><span class="lbl">Fournisseur / Prestataire :</span><span class="fill"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CYCLE DE VIE -->
+  <div class="sec">
+    <div class="sec-h">4 &middot; Cycle de vie</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f half"><span class="lbl">Date d'acquisition :</span> <span class="date-cells">__/__/____</span></div>
+        <div class="f half"><span class="lbl">Fin de garantie :</span> <span class="date-cells">__/__/____</span></div>
+      </div>
+      <div class="row">
+        <div class="f full"><span class="lbl">État :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> En service</span>
+            <span class="opt"><span class="cb"></span> En panne</span>
+            <span class="opt"><span class="cb"></span> En maintenance</span>
+            <span class="opt"><span class="cb"></span> Hors service</span>
+            <span class="opt"><span class="cb"></span> Mis au rebut</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MAINTENANCE -->
+  <div class="sec">
+    <div class="sec-h">5 &middot; Maintenance</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f half"><span class="lbl">Dernière maintenance :</span> <span class="date-cells">__/__/____</span></div>
+        <div class="f half"><span class="lbl">Prochaine maintenance :</span> <span class="date-cells">__/__/____</span></div>
+      </div>
+      <div class="row">
+        <div class="f half"><span class="lbl">Périodicité (mois) :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> 1</span>
+            <span class="opt"><span class="cb"></span> 3</span>
+            <span class="opt"><span class="cb"></span> 6</span>
+            <span class="opt"><span class="cb"></span> 12</span>
+            <span class="opt"><span class="cb"></span> 24</span>
+          </span>
+        </div>
+        <div class="f half"><span class="lbl">Technicien référent :</span><span class="fill"></span></div>
+      </div>
+      <div class="row">
+        <div class="f full"><span class="lbl">Ensemble / Package (le cas échéant) :</span><span class="fill"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. RÉFORME -->
+  <div class="sec">
+    <div class="sec-h">6 &middot; Réforme</div>
+    <div class="sec-b">
+      <div class="row">
+        <div class="f half"><span class="lbl ini">Réformé :</span>
+          <span class="opts">
+            <span class="opt"><span class="cb"></span> Oui</span>
+            <span class="opt"><span class="cb"></span> Non</span>
+          </span>
+        </div>
+        <div class="f half"><span class="lbl ini">Date de réforme :</span> <span class="date-cells">__/__/____</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBSERVATION -->
+  <div class="sec">
+    <div class="sec-h">Observation</div>
+    <div class="obs-lines"></div>
+  </div>
+
+  <div class="note-calc">
+    Champs calculés automatiquement par l'outil (ne pas remplir sur la fiche) : nombre de composants, composants défectueux.
+  </div>
+
+  <div class="footer">
+    <span>Webcreatys SAS &middot; Fiche d'inventaire v1.0 &middot; 04/06/2026</span>
+    <span>Correspond à l'écran EQUIPEMENTS (27 champs). Réf. schéma : data-models/data-dictionary-EQUIPEMENTS.md</span>
+  </div>
+
+</body>
+</html>
