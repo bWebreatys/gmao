@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mode opératoire de saisie - GMAO</title>
+<style>
+  @page { size: A4; margin: 11mm 14mm 10mm 14mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "DejaVu Sans", "Liberation Sans", sans-serif;
+    color: #1a1a1a; font-size: 9.4pt; line-height: 1.32; margin: 0; }
+  .title-bar { display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 2.5pt solid #1F4E79; padding-bottom: 5px; }
+  .title-bar h1 { font-family: "DejaVu Serif", serif; color: #1F4E79; font-size: 15pt; margin: 0 0 2px 0; }
+  .subtitle { font-size: 8pt; color: #444; }
+  .ref-box { border: 1pt solid #1F4E79; padding: 4px 8px; font-size: 8pt; color: #555; }
+  h2 { color: #1F4E79; font-size: 10.5pt; margin: 11px 0 3px 0;
+    border-bottom: 1pt solid #c9d4e0; padding-bottom: 2px; }
+  p { margin: 3px 0; }
+  ol, ul { margin: 3px 0 3px 0; padding-left: 18px; }
+  li { margin: 2px 0; }
+  .ini { color: #C00000; font-weight: bold; }
+  table { border-collapse: collapse; width: 100%; margin-top: 4px; font-size: 8.8pt; }
+  th, td { border: 1pt solid #c9d4e0; padding: 3px 6px; text-align: left; vertical-align: top; }
+  th { background: #1F4E79; color: #fff; font-weight: bold; }
+  tr:nth-child(even) td { background: #f3f6fa; }
+  .note { background: #eef3f8; border-left: 3pt solid #1F4E79; padding: 5px 8px; margin: 5px 0; font-size: 8.8pt; }
+  .footer { margin-top: 10px; border-top: 1pt solid #1F4E79; padding-top: 4px;
+    font-size: 7.2pt; color: #555; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+  <div class="title-bar">
+    <div>
+      <h1>Mode opératoire de saisie &ndash; GMAO</h1>
+      <div class="subtitle">GMAO &ndash; Projet Offre de Soins &middot; Union des Comores &middot; Expertise France / AFD</div>
+    </div>
+    <div class="ref-box">v1.0 &middot; 04/06/2026<br>Webcreatys SAS</div>
+  </div>
+
+  <h2>1 &middot; Objet</h2>
+  <p>Homogénéiser la saisie des données dans la GMAO à partir des fiches papier remplies sur le terrain.
+  Chaque fiche papier correspond à un écran de l'outil ; elle se remplit d'abord à la main, puis se reporte dans l'écran.</p>
+
+  <h2>2 &middot; Responsabilité</h2>
+  <p>Le technicien biomédical a la charge de la saisie des équipements et des interventions de son secteur.
+  L'ingénieur biomédical (ou le référent) vérifie la complétude et la cohérence des informations saisies.</p>
+
+  <h2>3 &middot; Lancement de l'outil</h2>
+  <ol>
+    <li>Double-cliquer sur <strong>lancer_gmao.py</strong> (le navigateur s'ouvre automatiquement).</li>
+    <li>Adresse de l'outil : <strong>http://127.0.0.1:5000</strong></li>
+    <li>Le fichier de données <strong>GMAO_v0.1.xlsx</strong> doit se trouver à côté du lanceur.</li>
+  </ol>
+  <div class="note">En cas de message « fichier introuvable » ou d'accès bloqué au port 5000,
+  se reporter aux guides d'installation du dépôt (PREREQUIS-INSTALLATION, INSTALLATION-STEP-BY-STEP).</div>
+
+  <h2>4 &middot; Démarche de saisie selon la fiche</h2>
+  <ol>
+    <li><strong>Nouvel équipement</strong> &ndash; fiche d'inventaire &rarr; écran <strong>EQUIPEMENTS</strong> &gt; « Nouvel équipement » &gt; reporter section par section. Le code EQ est attribué automatiquement à l'enregistrement.</li>
+    <li><strong>Réception (achat ou don)</strong> &ndash; fiche de réception &rarr; reporter la provenance, les dates et la conformité charte dans la fiche d'inventaire de l'équipement.</li>
+    <li><strong>Intervention</strong> &ndash; fiche d'intervention &rarr; écran <strong>INTERVENTIONS</strong> &gt; « Nouvelle intervention » &gt; sélectionner le code EQ concerné.</li>
+    <li><strong>Maintenance préventive</strong> &ndash; fiche de maintenance préventive &rarr; écran <strong>MAINT_PREV</strong> &gt; « Nouvelle ».</li>
+    <li><strong>Réforme</strong> &ndash; fiche de réforme / DEEE &rarr; ouvrir l'équipement dans <strong>EQUIPEMENTS</strong> &gt; mettre <span class="ini">Réformé = Oui</span> et renseigner la <span class="ini">Date de réforme</span>.</li>
+  </ol>
+
+  <h2>5 &middot; Règles de saisie</h2>
+  <ul>
+    <li><strong>Listes déroulantes</strong> : toujours choisir une valeur de la liste, ne jamais inventer. Si une valeur manque, prévenir l'administrateur (ajout dans l'onglet LISTES puis relance de l'outil).</li>
+    <li><strong>Dates</strong> : format JJ/MM/AAAA.</li>
+    <li><strong>Champs calculés</strong> : ne pas les saisir (affichés en lecture seule, calculés par l'outil).</li>
+    <li><strong>Champs <span class="ini">&#9733;</span></strong> (en rouge sur les fiches) : ajouts hors document source &ndash; île, provenance, conformité charte des dons, réforme &ndash; à renseigner avec soin (pilotage par île et suivi des dons).</li>
+    <li><strong>Traçabilité</strong> : conserver une fiche papier par enregistrement.</li>
+  </ul>
+
+  <h2>6 &middot; Consolidation locale et centrale</h2>
+  <p>Chaque établissement saisit localement, dans son propre fichier. Les données sont sauvegardées
+  régulièrement et remontées vers l'échelon central (ingénieur biomédical de la DESPP) par clé USB,
+  pour une vue par île et nationale. Autonome ne veut pas dire isolé.</p>
+
+  <h2>7 &middot; Correspondance fiche papier &harr; écran</h2>
+  <table>
+    <tr><th>Fiche papier</th><th>Écran GMAO</th><th>Identifiant</th></tr>
+    <tr><td>Fiche de réception</td><td>(amont) alimente EQUIPEMENTS</td><td>&ndash;</td></tr>
+    <tr><td>Fiche d'inventaire</td><td>EQUIPEMENTS</td><td>Code EQ (auto)</td></tr>
+    <tr><td>Fiche d'intervention</td><td>INTERVENTIONS</td><td>Code INT (auto)</td></tr>
+    <tr><td>Fiche de maintenance préventive</td><td>MAINT_PREV</td><td>Code MP (auto)</td></tr>
+    <tr><td>Fiche de réforme / DEEE</td><td>EQUIPEMENTS (champs Réformé / Date de réforme)</td><td>Code EQ</td></tr>
+  </table>
+
+  <div class="footer">
+    <span>Webcreatys SAS &middot; Mode opératoire de saisie GMAO v1.0 &middot; 04/06/2026</span>
+    <span>Réf. schéma : data-models/data-dictionary-EQUIPEMENTS.md</span>
+  </div>
+
+</body>
+</html>
