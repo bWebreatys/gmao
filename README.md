@@ -103,6 +103,15 @@ gmao/
 - ✅ État, statut (disponible/en réparation/immobilisé)
 - ✅ Historique des interventions
 
+**Équipements biomédicaux — champs contexte Comores (★ initiative, hors document source)** :
+Ajoutés d'après le modèle d'inventaire de l'Annexe 4 du rapport de mission N°2 (P. Lopes, Expertise France) et le constat terrain (dons majoritaires, caractère insulaire) :
+- ★ Désignation complémentaire (libellé plus explicite que le standard)
+- ★ Provenance (Achat ministère / Don OMS / Don Emirats / Don ONG / Don diaspora / Achat établissement / Autre)
+- ★ Île (Ngazidja / Anjouan / Mohéli) — clé de consolidation par atelier insulaire
+- ★ Conformité charte des dons (Oui / Non / Non concerné)
+- ★ Réformé (Oui / Non) et Date de réforme — fin de vie / circuit DEEE
+Traçabilité : ces champs sont en colonnes 22 à 27 de l'onglet EQUIPEMENTS (après Observation), afin de ne pas déplacer les colonnes calculées 19/20 (formules protégées). Voir le dictionnaire de données détaillé dans `data-models/data-dictionary-EQUIPEMENTS.md`.
+
 **Composants & Packages** :
 - ✅ Différenciation Composant vs Package
 - ✅ Lien équipement → ses composants
@@ -191,6 +200,6 @@ contact@webcreatys.com
 
 ---
 
-**Dernière mise à jour** : 22 mai 2026
+**Dernière mise à jour** : 4 juin 2026
 **Prochaines étapes** : Élicitation sur place (juin-juillet 2026)
 **Architecture future** : Recommandations WinDev/web dans la note de cadrage

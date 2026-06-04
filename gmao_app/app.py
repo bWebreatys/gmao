@@ -192,9 +192,12 @@ EQ_COLS = [
     (17,"Technicien_Referent","fk"),(18,"Code_Package","fk"),
     (19,"Nb_Composants","formula"),(20,"Composant_Defectueux","formula"),
     (21,"Observation","textarea"),
+    (22,"Nom_Complementaire","text"),(23,"Provenance","select"),
+    (24,"Ile","select"),(25,"Conformite_Charte_Dons","select"),
+    (26,"Reforme","select"),(27,"Date_Reforme","date"),
 ]
 EQ_FCOLS = {19,20}
-EQ_DATES = ["Date_Acquisition","Garantie_Fin","Date_Derniere_Maintenance","Prochaine_Maintenance"]
+EQ_DATES = ["Date_Acquisition","Garantie_Fin","Date_Derniere_Maintenance","Prochaine_Maintenance","Date_Reforme"]
 
 COMP_COLS = [
     (1,"Code_Composant","text"),(2,"Code_Equipement","fk"),(3,"Designation_Equip","formula"),
@@ -293,12 +296,14 @@ def equipements_list():
     q = request.args.get("q","").strip().lower()
     fe = request.args.get("etat","").strip()
     fc = request.args.get("criticite","").strip()
+    fi = request.args.get("ile","").strip()
     if q:  rows = [r for r in rows if any(q in str(v).lower() for v in r.values())]
     if fe: rows = [r for r in rows if r.get("Etat") == fe]
     if fc: rows = [r for r in rows if r.get("Criticite") == fc]
+    if fi: rows = [r for r in rows if r.get("Ile") == fi]
     L = get_listes()
     return render_template("equipements_list.html", rows=rows,
-        search=q, filtre_etat=fe, filtre_crit=fc,
+        search=q, filtre_etat=fe, filtre_crit=fc, filtre_ile=fi, iles=L["Ile"],
         etats=L["Etat_Equip"], criticites=L["Criticite"])
 
 @app.route("/equipements/nouveau", methods=["GET","POST"])

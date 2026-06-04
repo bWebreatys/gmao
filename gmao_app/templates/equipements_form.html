@@ -168,6 +168,53 @@
     <div class="form-hint">Calculé (COUNTIFS COMPOSANTS)</div>
   </div>
 
+  <div class="form-section init"><span class="form-section-title">★ Contexte insulaire &amp; provenance</span><div class="form-section-line"></div></div>
+
+  <div class="form-group span2">
+    <label class="form-label">Désignation complémentaire <span class="init">★</span></label>
+    <input type="text" name="Nom_Complementaire" class="form-control"
+           value="{{ fd.get('Nom_Complementaire','') }}" placeholder="Libellé plus explicite (optionnel)">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Île <span class="init">★</span></label>
+    <select name="Ile" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Ile %}<option value="{{ v }}" {% if fd.get('Ile')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Provenance <span class="init">★</span></label>
+    <select name="Provenance" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Provenance %}<option value="{{ v }}" {% if fd.get('Provenance')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+    <div class="form-hint">Achat ou origine du don</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Conformité charte des dons <span class="init">★</span></label>
+    <select name="Conformite_Charte_Dons" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.Conformite_Charte %}<option value="{{ v }}" {% if fd.get('Conformite_Charte_Dons')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+
+  <div class="form-section init"><span class="form-section-title">★ Réforme</span><div class="form-section-line"></div></div>
+
+  <div class="form-group">
+    <label class="form-label">Réformé <span class="init">★</span></label>
+    <select name="Reforme" class="form-control">
+      <option value="">— Choisir —</option>
+      {% for v in L.OuiNon %}<option value="{{ v }}" {% if fd.get('Reforme')==v %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Date de réforme <span class="init">★</span></label>
+    <div class="date-wrap"><input type="text" name="Date_Reforme"
+      class="form-control date-input {% if errors.Date_Reforme %}is-invalid{% endif %}"
+      value="{{ fd.get('Date_Reforme','') }}" placeholder="JJ/MM/AAAA" maxlength="10"></div>
+    {% if errors.Date_Reforme %}<div class="form-error">{{ errors.Date_Reforme }}</div>{% endif %}
+  </div>
+
   <div class="form-section"><span class="form-section-title">📝 Observation</span><div class="form-section-line"></div></div>
 
   <div class="form-group span3">

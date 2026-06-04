@@ -39,6 +39,15 @@
         {% endfor %}
       </select>
     </div>
+    <div class="filter-group">
+      <label>Île</label>
+      <select name="ile">
+        <option value="">— Toutes —</option>
+        {% for i in iles %}
+          <option value="{{ i }}" {% if i == filtre_ile %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+      </select>
+    </div>
     <div style="display:flex;gap:8px;align-items:flex-end">
       <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
       <a href="{{ url_for('equipements_list') }}" class="btn btn-secondary btn-sm">Réinitialiser</a>
@@ -58,6 +67,8 @@
           <th>Catégorie</th>
           <th>Criticité</th>
           <th>Service</th>
+          <th>Île</th>
+          <th>Provenance</th>
           <th>Marque / Modèle</th>
           <th>État</th>
           <th>Prochaine MP</th>
@@ -89,6 +100,8 @@
             {% endif %}
           </td>
           <td>{{ r.Service }}</td>
+          <td>{{ r.Ile }}</td>
+          <td class="text-muted" style="font-size:.82rem">{{ r.Provenance }}</td>
           <td class="text-muted">{{ r.Marque }}{% if r.Marque and r.Modele %} – {% endif %}{{ r.Modele }}</td>
           <td>
             {% if r.Etat %}

@@ -199,6 +199,67 @@ Défectueuse
 
 ---
 
+### 5. PROVENANCE (★ initiative — contexte Comores)
+
+**Onglet source** : LISTES, colonne Q (Provenance)
+
+```
+Achat ministère
+Don OMS
+Don Emirats
+Don ONG
+Don diaspora
+Achat établissement
+Autre
+```
+
+**Utilisation** :
+- EQUIPEMENTS → "Provenance"
+- Filtre / KPI : part des équipements issus de dons vs achats
+- Origine : modèle d'inventaire Annexe 4 (rapport Lopes N°2) + constat terrain (90 %+ de dons)
+
+---
+
+### 6. ÎLE (★ initiative — contexte Comores)
+
+**Onglet source** : LISTES, colonne R (Ile)
+
+```
+Ngazidja
+Anjouan
+Mohéli
+```
+
+**Utilisation** :
+- EQUIPEMENTS → "Ile"
+- Filtre principal de la liste équipements
+- Clé de consolidation par atelier biomédical insulaire
+
+---
+
+### 7. CONFORMITÉ CHARTE DES DONS (★ initiative — contexte Comores)
+
+**Onglet source** : LISTES, colonne S (Conformite_Charte)
+
+```
+Oui
+Non
+Non concerné
+```
+
+**Utilisation** :
+- EQUIPEMENTS → "Conformite_Charte_Dons"
+- Trace le respect des prérequis d'acquisition (recommandation N°4 du rapport Lopes)
+
+---
+
+### Réformé (réutilise la liste Oui/Non existante)
+
+Le champ EQUIPEMENTS → "Reforme" s'appuie sur la liste `OuiNon` (colonne O) déjà
+présente. La "Date de réforme" est un champ date libre (JJ/MM/AAAA), sans liste.
+
+---
+
 ## 🏗️ STRUCTURE RECOMMANDÉE
 
 ### Onglet LISTES (caché / masqué)
@@ -475,6 +536,6 @@ Email reçu : "On a oublié un type de formation : Diplôme de base"
 
 ---
 
-**Version** : 22 mai 2026
+**Version** : 4 juin 2026
 **Audience** : Admin + Opérateurs Comores
 **Prochaine étape** : Adapter listes selon réalité locale
