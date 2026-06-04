@@ -12,7 +12,7 @@ from flask import (Flask, render_template, request,
                    redirect, url_for, flash, jsonify)
 from openpyxl import load_workbook
 
-XLSX_PATH = Path(__file__).parent.parent / "GMAO_Outil.xlsx"
+XLSX_PATH = Path(__file__).parent.parent / "GMAO_v0.1.xlsx"
 app = Flask(__name__)
 app.secret_key = "gmao-local-2025"
 

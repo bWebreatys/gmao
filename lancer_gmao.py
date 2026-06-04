@@ -7,7 +7,7 @@ import sys, os, subprocess, webbrowser, time, threading
 from pathlib import Path
 
 # Vérifications préliminaires
-xlsx = Path(__file__).parent / "GMAO_Outil.xlsx"
+xlsx = Path(__file__).parent / "GMAO_v0.1.xlsx"
 app_dir = Path(__file__).parent / "gmao_app"
 
 if not xlsx.exists():

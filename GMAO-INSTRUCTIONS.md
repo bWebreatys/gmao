@@ -3,7 +3,7 @@
 ## Contenu du dossier
 
 ```
-GMAO_Outil.xlsx          ← Fichier Excel (données + formules)
+GMAO_v0.1.xlsx          ← Fichier Excel (données + formules)
 lancer_gmao.py           ← Double-clic ou : python lancer_gmao.py
 gmao_app/
   app.py                 ← Serveur Flask (logique métier complète)
